@@ -34,8 +34,15 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
   userId,
   children,
 }) => {
-  const [displayName, setDisplayNameState] = useState<string>("");
-  const [displayNameSet, setDisplayNameSet] = useState<boolean>(false);
+  // Check if display name exists in localStorage on init
+  const savedDisplayName = localStorage.getItem("chat_room_displayName");
+
+  const [displayName, setDisplayNameState] = useState<string>(
+    savedDisplayName || ""
+  );
+  const [displayNameSet, setDisplayNameSet] = useState<boolean>(
+    !!savedDisplayName
+  );
   const [roomId, setRoomIdState] = useState<string>("general");
   const [connectionStatus, setConnectionStatusState] =
     useState<ConnectionStatus>("idle");
