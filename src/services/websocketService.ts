@@ -170,6 +170,6 @@ class WebSocketService {
 }
 
 // Singleton instance
-export const wsService = new WebSocketService('ws://localhost:8080/ws');
+export const wsService = new WebSocketService("ws://localhost:8080/ws");
 
 export default WebSocketService;
