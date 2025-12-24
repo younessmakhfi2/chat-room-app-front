@@ -1,89 +1,44 @@
-import React, { createContext, useState, useCallback, ReactNode } from "react";
+import React, { createContext, useState, useCallback } from 'react';
 
-export type ConnectionStatus =
-  | "idle"
-  | "connecting"
-  | "connected"
-  | "disconnected"
-  | "error";
-
-export interface SessionContextType {
-  // State
+interface SessionContextType {
   userId: string | null;
-  displayName: string;
-  roomId: string;
-  connectionStatus: ConnectionStatus;
-  displayNameSet: boolean;
-
-  // Actions
-  setDisplayName: (name: string) => void;
-  setRoomId: (roomId: string) => void;
-  setConnectionStatus: (status: ConnectionStatus) => void;
+  username: string | null;
+  isConnected: boolean;
+  setSession: (userId: string, username: string) => void;
+  clearSession: () => void;
+  setConnected: (connected: boolean) => void;
 }
 
 export const SessionContext = createContext<SessionContextType | undefined>(
   undefined
 );
 
-interface SessionProviderProps {
-  userId: string;
-  children: ReactNode;
-}
-
-export const SessionProvider: React.FC<SessionProviderProps> = ({
-  userId,
+export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Check if display name exists in localStorage on init
-  const savedDisplayName = localStorage.getItem("chat_room_displayName");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const [displayName, setDisplayNameState] = useState<string>(
-    savedDisplayName || ""
-  );
-  const [displayNameSet, setDisplayNameSet] = useState<boolean>(
-    !!savedDisplayName
-  );
-  const [roomId, setRoomIdState] = useState<string>("general");
-  const [connectionStatus, setConnectionStatusState] =
-    useState<ConnectionStatus>("idle");
-
-  // Allow setting display name only once
-  const setDisplayName = useCallback(
-    (name: string): void => {
-      if (!displayNameSet && name.trim()) {
-        setDisplayNameState(name.trim());
-        setDisplayNameSet(true);
-      }
-    },
-    [displayNameSet]
-  );
-
-  // Allow changing room ID
-  const setRoomId = useCallback((newRoomId: string): void => {
-    if (newRoomId.trim()) {
-      setRoomIdState(newRoomId.trim());
-    }
+  const setSession = useCallback((id: string, name: string) => {
+    setUserId(id);
+    setUsername(name);
   }, []);
 
-  // Allow updating connection status
-  const setConnectionStatus = useCallback((status: ConnectionStatus): void => {
-    setConnectionStatusState(status);
+  const clearSession = useCallback(() => {
+    setUserId(null);
+    setUsername(null);
   }, []);
 
-  const value: SessionContextType = {
-    userId,
-    displayName,
-    roomId,
-    connectionStatus,
-    displayNameSet,
-    setDisplayName,
-    setRoomId,
-    setConnectionStatus,
-  };
+  const setConnected = useCallback((connected: boolean) => {
+    setIsConnected(connected);
+  }, []);
 
   return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
+    <SessionContext.Provider
+      value={{ userId, username, isConnected, setSession, clearSession, setConnected }}
+    >
+      {children}
+    </SessionContext.Provider>
   );
 };
-
-export default SessionContext;
