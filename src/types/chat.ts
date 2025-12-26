@@ -1,22 +1,30 @@
-export type MessageType = "CHAT" | "SYSTEM" | "JOIN" | "LEAVE";
+export interface Message {
+  id: string;
+  sender: string;
+  senderName: string;
+  content: string;
+  timestamp: Date;
+  edited?: boolean;
+  deletedAt?: Date;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  status: 'online' | 'offline' | 'away';
+  lastSeen: Date;
+}
+
+export interface ChatRoom {
+  id: string;
+  name: string;
+  description: string;
+  users: User[];
+  messages: Message[];
+  createdAt: Date;
+}
 
 export interface ChatMessage {
-  id?: string;
-  userId: string;
-  displayName: string;
-  roomId: string;
-  type: MessageType;
-  content: string;
-  timestamp: number;
-  avatar?: string;
-}
-
-export interface WebSocketMessage {
-  type: MessageType;
-  payload: ChatMessage;
-}
-
-export interface WebSocketErrorEvent {
-  code: number;
-  reason: string;
+  type: 'message' | 'system' | 'notification';
+  payload: Message | string;
 }
