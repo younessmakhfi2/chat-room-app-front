@@ -118,3 +118,103 @@
   text-align: center;
   margin: 15px 0 0 0;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .display-name-entry-card {
+    padding: 30px 20px;
+    max-width: 100%;
+  }
+
+  .display-name-entry-card h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    margin-bottom: 25px;
+  }
+
+  .display-name-input {
+    padding: 11px 13px;
+    font-size: 15px;
+  }
+
+  .char-count {
+    font-size: 11px;
+    right: 10px;
+    top: 10px;
+  }
+
+  .submit-button {
+    padding: 11px;
+    font-size: 15px;
+  }
+
+  .info-text {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .display-name-entry-container {
+    padding: 15px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .display-name-entry-card {
+    padding: 25px 18px;
+    border-radius: 10px;
+  }
+
+  .display-name-entry-card h1 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .display-name-input {
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+
+  .char-count {
+    font-size: 10px;
+    right: 8px;
+    top: 8px;
+  }
+
+  .error-message {
+    font-size: 12px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+  }
+
+  .submit-button {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+
+  .submit-button:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .info-text {
+    font-size: 10px;
+    margin-top: 12px;
+  }
+}

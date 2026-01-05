@@ -214,3 +214,128 @@
   color: white;
   border-bottom-right-radius: 4px;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .chat-header {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .header-left {
+    width: 100%;
+  }
+
+  .room-title {
+    font-size: 22px;
+  }
+
+  .room-description {
+    font-size: 12px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .chat-messages-container {
+    padding: 15px 15px;
+    gap: 8px;
+  }
+
+  .message-content {
+    max-width: 85%;
+  }
+
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .message-bubble {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .empty-title {
+    font-size: 18px;
+  }
+
+  .empty-subtitle {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-header {
+    padding: 12px 15px;
+  }
+
+  .room-title {
+    font-size: 18px;
+  }
+
+  .room-description {
+    font-size: 11px;
+  }
+
+  .status-text {
+    font-size: 11px;
+  }
+
+  .connection-indicator {
+    padding: 4px 10px;
+    gap: 6px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .chat-messages-container {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .message-content {
+    max-width: 90%;
+  }
+
+  .message-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+
+  .message-bubble {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+
+  .message-header {
+    font-size: 11px;
+  }
+
+  .message-name {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .message-time {
+    font-size: 10px;
+  }
+
+  .empty-title {
+    font-size: 16px;
+  }
+
+  .empty-subtitle {
+    font-size: 12px;
+  }
+}

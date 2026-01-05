@@ -3,6 +3,8 @@ import { ChatMessage, WebSocketMessage } from "../types/chat";
 class WebSocketService {
   private ws: WebSocket | null = null;
   private url: string;
+  private sessionId: string | null = null;
+  private isConnecting: boolean = false;
   private messageHandlers: Set<(message: ChatMessage) => void> = new Set();
   private connectionHandlers: Set<
     (status: "connected" | "disconnected" | "error") => void
@@ -19,12 +21,24 @@ class WebSocketService {
    * Connect to WebSocket server
    */
   public connect(): Promise<void> {
+    // Prevent multiple concurrent connection attempts
+    if (this.isConnecting) {
+      return Promise.resolve();
+    }
+
+    // Already connected, don't reconnect
+    if (this.ws && this.isConnected()) {
+      return Promise.resolve();
+    }
+
+    this.isConnecting = true;
     return new Promise((resolve, reject) => {
       try {
         this.ws = new WebSocket(this.url);
 
         this.ws.onopen = () => {
-          console.log("[WebSocket] Connected");
+          this.isConnecting = false;
+          this.sessionId = this.generateSessionId();
           this.reconnectAttempts = 0;
           this.notifyConnectionStatus("connected");
           resolve();
@@ -33,6 +47,15 @@ class WebSocketService {
         this.ws.onmessage = (event) => {
           try {
             const data: WebSocketMessage = JSON.parse(event.data);
+            console.log("[WebSocket] Message received:", {
+              sessionId: this.sessionId,
+              userId: data.payload.userId,
+              from: data.payload.displayName,
+              room: data.payload.roomId,
+              type: data.payload.type,
+              content: data.payload.content,
+              timestamp: new Date(data.payload.timestamp).toLocaleTimeString(),
+            });
             this.notifyMessageHandlers(data.payload);
           } catch (error) {
             console.error("[WebSocket] Failed to parse message:", error);
@@ -40,18 +63,18 @@ class WebSocketService {
         };
 
         this.ws.onerror = (error) => {
-          console.error("[WebSocket] Error:", error);
+          this.isConnecting = false;
           this.notifyConnectionStatus("error");
           reject(error);
         };
 
         this.ws.onclose = () => {
-          console.log("[WebSocket] Disconnected");
+          this.isConnecting = false;
           this.notifyConnectionStatus("disconnected");
           this.attemptReconnect();
         };
       } catch (error) {
-        console.error("[WebSocket] Connection failed:", error);
+        this.isConnecting = false;
         reject(error);
       }
     });
@@ -62,7 +85,6 @@ class WebSocketService {
    */
   public sendMessage(message: ChatMessage): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      console.warn("[WebSocket] Connection not open");
       return;
     }
 
@@ -121,22 +143,24 @@ class WebSocketService {
   }
 
   /**
+   * Generate a unique session ID
+   */
+  private generateSessionId(): string {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
    * Attempt to reconnect
    */
   private attemptReconnect(): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
-      console.log(
-        `[WebSocket] Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
-      );
 
       setTimeout(() => {
         this.connect().catch((error) => {
           console.error("[WebSocket] Reconnect failed:", error);
         });
       }, this.reconnectDelay);
-    } else {
-      console.error("[WebSocket] Max reconnection attempts reached");
     }
   }
 
@@ -148,7 +172,7 @@ class WebSocketService {
       try {
         handler(message);
       } catch (error) {
-        console.error("[WebSocket] Handler error:", error);
+        // Silently catch handler errors
       }
     });
   }
@@ -163,13 +187,13 @@ class WebSocketService {
       try {
         handler(status);
       } catch (error) {
-        console.error("[WebSocket] Connection handler error:", error);
+        // Silently catch connection handler errors
       }
     });
   }
 }
 
 // Singleton instance
-export const wsService = new WebSocketService("ws://localhost:8080/ws");
+export const wsService = new WebSocketService("ws://192.168.3.17:8080/ws");
 
 export default WebSocketService;
