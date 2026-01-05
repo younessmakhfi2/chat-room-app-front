@@ -72,7 +72,9 @@ const ChatPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <div className={`w-2.5 h-2.5 rounded-full ${getStatusColor()} animate-pulse`}></div>
+              <div
+                className={`w-2.5 h-2.5 rounded-full ${getStatusColor()} animate-pulse`}
+              ></div>
               <span className="text-xs font-medium text-gray-600 capitalize">
                 {connectionStatus}
               </span>
